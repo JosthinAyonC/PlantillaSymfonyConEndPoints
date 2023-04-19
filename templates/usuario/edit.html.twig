@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Usuario{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid">
+    <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+            <form id="formularioUsuario">
+                <div class="invisible">
+					<input type="text" id="id" value={{usuario.idUsuario}} name="id" >
+				</div>
+                <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <a href="#" class="">
+                            <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>Actualizar registro.</h3>
+                        </a>
+                        <h3>Aplication</h3>
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="text" id="nombre" value={{usuario.nombre}} class="form-control" id="floatingInput" placeholder="name@example.com">
+                        
+                        <label for="floatingInput">Nombre</label>
+
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" id="apellido" value={{usuario.apellido}} class="form-control" id="floatingInput" placeholder="name@example.com">
+                        
+                        <label for="floatingInput">Appellido</label>
+
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" id="correo" value={{usuario.correo}} class="form-control" id="floatingInput" placeholder="name@example.com">
+                        
+                        <label for="floatingInput">Email address</label>
+
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" id="clave" value={{usuario.clave}} class="form-control" id="floatingInput" placeholder="name@example.com">
+                        
+                        <label for="floatingPassword">Password</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" aria-label="Floating label select example">
+                            <option id="roles" value={{usuario.roles |join(', ')}}>ROLE_ADMIN</option>
+                            <option id="roles" value={{usuario.roles |join(', ')}}>ROLE_RECEPCION</option>
+                            <option id="roles" value={{usuario.roles |join(', ')}}>ROLE_LIMPIEZA</option>
+                        </select>
+                        <label for="floatingInput">ROL</label>
+                        
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <select class="form-select" aria-label="Floating label select example">
+                            <option id="roles" value={{usuario.estado}}>A</option>
+                            <option id="roles" value={{usuario.estado}}>I</option>
+                        </select>
+                        <label for="floatingInput">Estado</label>
+                        
+                    </div>
+                    <div>
+                        <button id="btn-actualizar" type="submit" 
+                        class="btn btn-primary py-3 w-100 mb-4">Actualizar</button>
+                    </div>
+
+
+                    <p class="text-center mb-0"><a href="{{path('app_usuario_index')}}">Volver</a></p>
+
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    async function editarUsuario() {
+    try {
+        let formUsuario = document.getElementById("formularioUsuario");
+        let btn_actualizar = document.getElementById("btn-actualizar");
+        
+        btn_actualizar.addEventListener("click", async function() {
+            let formData = new FormData(formUsuario);
+            const idUser = formData.get("idUsuario");
+            let response = await fetch (window.location, {
+                method: 'put',
+                body: JSON.stringify(Object.fromEntries(formData))
+            });
+            console.log(response)
+            stop()
+            
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+editarUsuario();
+</script>
+
+{% endblock %}
