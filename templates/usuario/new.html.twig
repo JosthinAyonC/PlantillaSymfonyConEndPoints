@@ -42,9 +42,9 @@
                     </div>
                     <div class="form-floating mb-3">
                         <select class="form-select" for="roles" name="roles" aria-label="Floating label select example">
-                            <option id="roles" value="['ROLE_ADMIN']">Administrador</option>
-                            <option id="roles" value="['ROLE_RECEPCION']">Recepcionista</option>
-                            <option id="roles" value="['ROLE_LIMPIEZA']">Personal de limpieza</option>
+                            <option id="roles" value='["ROLE_ADMIN"]'>Administrador</option>
+                            <option id="roles" value='["ROLE_RECEPCION"]'>Recepcionista</option>
+                            <option id="roles" value='["ROLE_LIMPIEZA"]'>Personal de limpieza</option>
                         </select>
                         <label for="roles">ROL</label>
 
@@ -61,7 +61,7 @@
                     </div>
 
                     <div>
-                        <button id="btnNuevo" type="submit"
+                        <button id="btnNuevo" type="button"
                          class="btn btn-primary py-3 w-100 mb-4">Crear</button>
                     </div>
 
@@ -85,13 +85,26 @@
             btn_nuevo.addEventListener("click", async function () {
 
                 let formData = new FormData(formUsuario);
-                
-                let response = await fetch(`http://127.0.0.1:8000/usuario/nuevo`, {
+
+                // Convertir el objeto FormData a un objeto JavaScript
+                let data = Object.fromEntries(formData);
+
+                // Convertir el campo roles a un objeto JavaScript
+                data.roles = JSON.parse(data.roles);
+
+                // Convertir el objeto JavaScript a una cadena JSON
+                let jsonData = JSON.stringify(data);
+
+                let response = await fetch(`/usuario/nuevo`, {
                     method: 'POST',
-                    body: JSON.stringify(Object.fromEntries(formData))
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: jsonData
                 });
-                console.log(Object.fromEntries(formData))
-                stop()
+
+                console.log(jsonData);
+                stop();
             });
 
         } catch (error) {
