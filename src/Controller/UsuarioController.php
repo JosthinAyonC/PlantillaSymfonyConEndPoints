@@ -49,65 +49,68 @@ class UsuarioController extends AbstractController
         }
     }
 
-
-
-    #[Route('/{idUsuario}', name: 'app_usuario_show', methods: ['GET'])]
-    public function show(Usuario $usuario): Response
-    {
-        if (!$usuario->getEstado() === 'A' || !$usuario->getEstado() === 'I') {
-            return $this->render('usuario/404.html.twig');
-        } else {
-            return $this->render('usuario/show.html.twig', [
-                'usuario' => $usuario,
-            ]);
-        }
-    }
-
     #[Route('/editar/{id}', name: 'editar_usuario', methods: ['GET'])]
     public function editarUsuario(string $id, UsuarioRepository $usuarioRepository): Response
     {
-        $usuario = $usuarioRepository->findOneByUserId($id);
+        if ($this->isGranted('ROLE_ADMIN')) {
+           
+            $usuario = $usuarioRepository->findOneByUserId($id);
 
         return $this->render('usuario/edit.html.twig', [
             'usuario' => $usuario
         ]);
+        
+        } else {
+            return $this->render('usuario/accesDenied.html.twig');
+        }
+        
     }
 
     #[Route('/{id}/editar', name: 'actualizar_usuario', methods: ['PUT'])]
-    public function editarUsuarioPut(Request $request, string $id, 
-    UsuarioRepository $usuarioRepository,
-    UserPasswordHasherInterface $userPasswordHasher    ): Response
-    {
+    public function editarUsuarioPut(
+        Request $request,
+        string $id,
+        UsuarioRepository $usuarioRepository,
+        UserPasswordHasherInterface $userPasswordHasher
+    ): Response {
 
-        $usuario = $usuarioRepository->findOneByUserId($id);
-
-        $jsonString = $request->getContent();
-        $data = json_decode($jsonString, true);
-
-        $usuario->setNombre($data['nombre']);
-        $usuario->setApellido($data['apellido']);
-        $usuario->setCorreo($data['correo']);
-        $usuario->setClave($usuario->getClave());
-        $usuario->setRoles($data['roles']);
-        $usuario->setEstado($data['estado']);
-
-
-        $usuarioRepository->save($usuario, true);
-
-
-        return $this->json($usuario);
+        if ($this->isGranted('ROLE_ADMIN')) {
+            
+            $usuario = $usuarioRepository->findOneByUserId($id);
+    
+            $jsonString = $request->getContent();
+            $data = json_decode($jsonString, true);
+    
+            $usuario->setNombre($data['nombre']);
+            $usuario->setApellido($data['apellido']);
+            $usuario->setCorreo($data['correo']);
+            $usuario->setClave($usuario->getClave());
+            $usuario->setRoles($data['roles']);
+            $usuario->setEstado($data['estado']);
+        
+            $usuarioRepository->save($usuario, true);
+    
+            return $this->json($usuario);
+        } else {
+            return $this->render('usuario/accesDenied.html.twig');
+        }
     }
 
     #[Route('/{idUsuario}/delete', name: 'delete_usuario', methods: ['PUT'])]
     public function deleteUsuarios(string $idUsuario, UsuarioRepository $usuarioRepository, Usuario $usuario): Response
     {
-        $usuario = $usuarioRepository->findOneByUserId($idUsuario);
-
-        $usuario->setEstado('N');
-
-        $usuarioRepository->save($usuario, true);
-
-        return $this->json($usuario);
+        if ($this->isGranted('ROLE_ADMIN')) {
+            
+            $usuario = $usuarioRepository->findOneByUserId($idUsuario);
+    
+            $usuario->setEstado('N');
+    
+            $usuarioRepository->save($usuario, true);
+    
+            return $this->json($usuario);
+        } else {
+            return $this->render('usuario/accesDenied.html.twig');
+        }
     }
 
     #[Route('/nuevo', name: 'nuevo_usuario', methods: ['POST'])]
@@ -117,28 +120,32 @@ class UsuarioController extends AbstractController
         UserPasswordHasherInterface $userPasswordHasher
     ): Response {
 
-        $jsonString = $request->getContent();
-        $data = json_decode($jsonString, true);
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $jsonString = $request->getContent();
+            $data = json_decode($jsonString, true);
 
-        $usuarioNew = new Usuario();
+            $usuarioNew = new Usuario();
 
-        $usuarioNew->setNombre($data['nombre']);
-        $usuarioNew->setApellido($data['apellido']);
-        $usuarioNew->setCorreo($data['correo']);
-        $usuarioNew->setClave($data['clave']);
-        $usuarioNew->setClave(
-            $userPasswordHasher->hashPassword(
-                $usuarioNew,
-                $data['clave']
-            )
-        );
-        $usuarioNew->setRoles($data['roles']);
-        $usuarioNew->setEstado($data['estado']);
+            $usuarioNew->setNombre($data['nombre']);
+            $usuarioNew->setApellido($data['apellido']);
+            $usuarioNew->setCorreo($data['correo']);
+            $usuarioNew->setClave($data['clave']);
+            $usuarioNew->setClave(
+                $userPasswordHasher->hashPassword(
+                    $usuarioNew,
+                    $data['clave']
+                )
+            );
+            $usuarioNew->setRoles($data['roles']);
+            $usuarioNew->setEstado($data['estado']);
 
-        $usuarioRepository->save($usuarioNew, true);
-        
-        
-        return $this->json($usuarioNew);
+            $usuarioRepository->save($usuarioNew, true);
+
+
+            return $this->json($usuarioNew);
+        } else {
+            return $this->render('usuario/accesDenied.html.twig');
+        }
     }
 
 
@@ -193,4 +200,15 @@ class UsuarioController extends AbstractController
     //         return $this->render('usuario/accesDenied.html.twig');
     //     }
     //     }
+    // #[Route('/{idUsuario}', name: 'app_usuario_show', methods: ['GET'])]
+    // public function show(Usuario $usuario): Response
+    // {
+    //     if (!$usuario->getEstado() === 'A' || !$usuario->getEstado() === 'I') {
+    //         return $this->render('usuario/404.html.twig');
+    //     } else {
+    //         return $this->render('usuario/show.html.twig', [
+    //             'usuario' => $usuario,
+    //         ]);
+    //     }
+    // }
 }
