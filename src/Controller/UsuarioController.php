@@ -87,12 +87,7 @@ class UsuarioController extends AbstractController
         $usuario->setNombre($data['nombre']);
         $usuario->setApellido($data['apellido']);
         $usuario->setCorreo($data['correo']);
-        $usuario->setClave(
-            $userPasswordHasher->hashPassword(
-                $usuario,
-                $data['clave']
-            )
-        );
+        $usuario->setClave($usuario->getClave());
         $usuario->setRoles($data['roles']);
         $usuario->setEstado($data['estado']);
 
@@ -112,9 +107,7 @@ class UsuarioController extends AbstractController
 
         $usuarioRepository->save($usuario, true);
 
-        return $this->json([
-            'usuario' => $usuario
-        ]);
+        return $this->json($usuario);
     }
 
     #[Route('/nuevo', name: 'nuevo_usuario', methods: ['POST'])]
@@ -143,7 +136,8 @@ class UsuarioController extends AbstractController
         $usuarioNew->setEstado($data['estado']);
 
         $usuarioRepository->save($usuarioNew, true);
-
+        
+        
         return $this->json($usuarioNew);
     }
 
