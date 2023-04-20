@@ -73,7 +73,7 @@ class UsuarioController extends AbstractController
         ]);
     }
 
-    #[Route('/{idUsuario}/editar', name: 'actualizar_usuario', methods: ['GET', 'PUT'])]
+    #[Route('/{idUsuario}/editar', name: 'actualizar_usuario', methods: ['PUT'])]
     public function editarUsuarioPut(Request $request, string $idUsuario, UsuarioRepository $usuarioRepository): Response
     {
 
@@ -94,6 +94,20 @@ class UsuarioController extends AbstractController
         
         
         return $this->json($usuario);
+    }
+
+    #[Route('/{idUsuario}/delete', name: 'delete_usuario', methods: ['PUT'])]
+    public function deleteUsuarios(string $idUsuario, UsuarioRepository $usuarioRepository, Usuario $usuario): Response
+    {
+            $usuario = $usuarioRepository->findOneByUserId($idUsuario);
+
+            $usuario->setEstado('N');
+
+            $usuarioRepository->save($usuario, true);
+
+        return $this->json([
+            'usuario' => $usuario
+        ]);
     }
 
     #[Route('/nuevo', name: 'nuevo_usuario', methods: ['POST'])]
@@ -119,19 +133,6 @@ class UsuarioController extends AbstractController
         return $this->json($usuarioNew);
     }
     
-    #[Route('/{id}/delete', name: 'delete_usuario', methods: ['PUT'])]
-    public function deleteUsuarios(Request $request, Usuario $usuario, EntityManagerInterface $entity): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $usuario->getIdUsuario(), $request->request->get('_token'))) {
-            $entity->$usuario->setEstado('N');
-            $entity->flush();
-        }
-        
-        
-        return $this->json([
-            'usuario' => $usuario
-        ]);
-    }
 
     
     // #[Route('/{idUsuario}', name: 'app_usuario_delete', methods: ['POST'])]

@@ -54,6 +54,7 @@ function mostrarDatosTabla(datos) {
         const botonActual = e.target;
         const iduser = botonActual.parentNode.parentElement.children[0].innerText;
         if (botonActual.classList.contains("btn-borrar")) {
+
             let response = await fetch(`http://127.0.0.1:8000/usuario/${iduser}/delete`, { method: 'PUT' });
             document.querySelector(`#usuario-${iduser}`).remove();
         } else{
@@ -62,11 +63,8 @@ function mostrarDatosTabla(datos) {
     }));
 }
 
-
-
 async function ListarUsuarios() {
     try {
-
         const respuesta = await fetch('http://127.0.0.1:8000/usuario/get', { method: 'GET' });
         const datos = await respuesta.json();
         mostrarDatosTabla(datos);

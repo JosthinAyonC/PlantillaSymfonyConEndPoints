@@ -16,9 +16,6 @@
                     <h3>Aplication</h3>
                 </div>
                 <form id="nuevo-usuario" >
-                    <div class="invisible">
-                        <input type="text" id="id" name="id">
-                    </div>
 
                     <div class="form-floating mb-3">
                         <input type="text" id="nombre" class="form-control" name="nombre" placeholder="Nombre">
@@ -88,7 +85,7 @@
             btn_nuevo.addEventListener("click", async function () {
 
                 let formData = new FormData(formUsuario);
-
+                
                 let response = await fetch(`http://127.0.0.1:8000/usuario/nuevo`, {
                     method: 'POST',
                     body: JSON.stringify(Object.fromEntries(formData))
