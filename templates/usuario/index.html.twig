@@ -7,7 +7,10 @@
 <div class="container-fluid">
     <div class="bg-secondary rounded h-100 p-4">
         <div class="bg-secondary rounded h-100 p-4">
-            <h6 class="mb-4">Usuarios Table</h6>
+            <h3 class="mb-4">Usuarios</h3>
+            <form id="form-obtenerRoles">
+                <input type="hidden" name="roles" value="{{ app.user.roles|join(', ') }}">
+            </form>
             <table class="table" id="tablausuarios">
                 <thead>
                     <tr>
@@ -18,8 +21,6 @@
                         <th>Estado</th>
                         {% if is_granted('ROLE_ADMIN') %}
                         <th>Acciones</th>
-                        {% else %}
-                        <th>Acciones *BLOQUEADO*</th>
                         {% endif %}
                     </tr>
                 </thead>
