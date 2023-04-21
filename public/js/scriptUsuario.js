@@ -1,7 +1,7 @@
 
 //ENLISTAR INDEX
 function mostrarDatosTabla(datos) {
-    let rolUsuarioLog=traerRol();
+    let rolUsuarioLog = traerRol();
     var tablaUsuarios = document.getElementById("tablausuarios");
     var tbody = tablaUsuarios.getElementsByTagName("tbody")[0];
     datos.forEach(function (usuario) {
@@ -29,17 +29,17 @@ function mostrarDatosTabla(datos) {
         if (usuario.estado === 'A' ? estado = 'Activo' : estado = 'Inactivo')
             celdaEstado.textContent = estado;
         fila.appendChild(celdaEstado);
-        
-        if(rolUsuarioLog=="ROLE_ADMIN"){
-            
+
+        if (rolUsuarioLog == "ROLE_ADMIN") {
+
             var celdaAcciones = document.createElement("td");
-    
+
             var botonBorrar = document.createElement('a');
             botonBorrar.classList.add('btn', 'btn-outline-primary', 'm-2', 'btn-borrar', 'btn-usuario');
             botonBorrar.id = 'btn-borrar';
             botonBorrar.textContent = 'Borrar';
             fila.appendChild(botonBorrar);
-    
+
             var enlaceEditar = document.createElement('a');
             enlaceEditar.classList.add('btn', 'btn-outline-primary', 'm-2', 'btn-usuario', 'btn-editar');
             enlaceEditar.id = 'btn-editar'
@@ -48,7 +48,7 @@ function mostrarDatosTabla(datos) {
             celdaAcciones.appendChild(botonBorrar);
             celdaAcciones.appendChild(enlaceEditar);
             fila.appendChild(celdaAcciones);
-    
+
         }
         tbody.appendChild(fila);
     });
@@ -61,21 +61,14 @@ function mostrarDatosTabla(datos) {
 
         if (botonActual.classList.contains("btn-borrar")) {
 
-            respuesta = await fetch(`/usuario/${iduser}/delete`, { method: 'PUT' })
-            if (respuesta.status == 200) {
-                let confirmacion = confirm(`Estas seguro que deseas eliminar al usuario ${nombre} ?`);
+            let confirmacion = confirm(`Estas seguro que deseas eliminar al usuario ${nombre} ?`);
 
-                if (confirmacion) {
-                    await fetch(`/usuario/${iduser}/delete`, { method: 'PUT' })
-                    document.querySelector(`#usuario-${iduser}`).remove()
-                    alert("Usuario borrado existosamente")
+            if (confirmacion) {
+                await fetch(`/usuario/${iduser}/delete`, { method: 'PUT' })
+                document.querySelector(`#usuario-${iduser}`).remove()
+                alert("Usuario borrado existosamente")
 
-                }
-            } else {
-                alert("No tienes permiso para hacer esto")
             }
-
-
 
         } else {
 
@@ -221,10 +214,10 @@ try {
 }
 
 //OBTENER ROL DEL USUARIO LOGEADO
-function traerRol(){
+function traerRol() {
     let formRoles = document.getElementById("form-obtenerRoles");
     let formData = new FormData(formRoles);
     let data = Object.fromEntries(formData);
-    
+
     return data.roles;
 }
