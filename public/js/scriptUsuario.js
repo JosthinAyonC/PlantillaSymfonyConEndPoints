@@ -57,7 +57,6 @@ function mostrarDatosTabla(datos) {
         if (botonActual.classList.contains("btn-borrar")) {
 
             respuesta = await fetch(`/usuario/${iduser}/delete`, { method: 'PUT' })
-            console.log(respuesta.status)
             if (respuesta.status == 200){
                 let confirmacion = confirm(`Estas seguro que deseas eliminar al usuario ${nombre} ?`);
 

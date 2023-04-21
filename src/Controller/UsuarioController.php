@@ -9,8 +9,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Config\Security\PasswordHasherConfig;
 
 #[Route('/usuario')]
 class UsuarioController extends AbstractController
@@ -53,17 +55,15 @@ class UsuarioController extends AbstractController
     public function editarUsuario(string $id, UsuarioRepository $usuarioRepository): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
-           
+
             $usuario = $usuarioRepository->findOneByUserId($id);
 
-        return $this->render('usuario/edit.html.twig', [
-            'usuario' => $usuario
-        ]);
-        
+            return $this->render('usuario/edit.html.twig', [
+                'usuario' => $usuario
+            ]);
         } else {
             return $this->render('usuario/accesDenied.html.twig');
         }
-        
     }
 
     #[Route('/{id}/editar', name: 'actualizar_usuario', methods: ['PUT'])]
@@ -75,24 +75,74 @@ class UsuarioController extends AbstractController
     ): Response {
 
         if ($this->isGranted('ROLE_ADMIN')) {
-            
+
             $usuario = $usuarioRepository->findOneByUserId($id);
-    
+
             $jsonString = $request->getContent();
             $data = json_decode($jsonString, true);
-    
+
             $usuario->setNombre($data['nombre']);
             $usuario->setApellido($data['apellido']);
             $usuario->setCorreo($data['correo']);
             $usuario->setClave($usuario->getClave());
             $usuario->setRoles($data['roles']);
             $usuario->setEstado($data['estado']);
-        
+
             $usuarioRepository->save($usuario, true);
-    
+
             return $this->json($usuario);
         } else {
             return $this->render('usuario/accesDenied.html.twig');
+        }
+    }
+
+    #[Route('/change/pass', name: 'edit_password', methods: ['GET'])]
+    public function editarContraseniaFront(): Response
+    {
+
+        return $this->render('usuario/passedit.html.twig');
+    }
+
+    #[Route('/{id}/change/pass', name: 'update_password', methods: ['PUT'])]
+    public function editarContraseniaPut(
+        UserPasswordHasherInterface $userPasswordHasher,
+        string $id,
+        UsuarioRepository $usuarioRepository,
+
+        Request $request
+    ): Response {
+        
+        $jsonString = $request->getContent();
+        $data = json_decode($jsonString, true);
+
+
+        $usuario = $usuarioRepository->findOneByUserId($id);
+        
+       $claveVerificar = $userPasswordHasher->isPasswordValid($usuario,$data['clave']);
+
+        if ($claveVerificar) {
+
+            $usuario->setNombre($usuario->getNombre());
+            $usuario->setApellido($usuario->getApellido());
+            $usuario->setCorreo($usuario->getCorreo());
+            $usuario->setClave(
+                $userPasswordHasher->hashPassword(
+                    $usuario,
+                    $data['claveNueva']
+                )
+            );
+            $usuario->setRoles($usuario->getRoles());
+            $usuario->setEstado($usuario->getEstado());
+
+            $usuarioRepository->save($usuario, true);
+
+            return $this->json($usuario);
+
+        }else{
+            $error = [
+                "msg" => "contrasenia incorrecta"
+            ];
+            return $this->json($error)->setStatusCode(400, "Contrasenia incorrecta");
         }
     }
 
@@ -100,18 +150,17 @@ class UsuarioController extends AbstractController
     public function deleteUsuarios(string $idUsuario, UsuarioRepository $usuarioRepository, Usuario $usuario): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
-            
-            $usuario = $usuarioRepository->findOneByUserId($idUsuario);
-    
-            $usuario->setEstado('N');
-    
-            $usuarioRepository->save($usuario, true);
-    
-            return $this->json($usuario);
 
+            $usuario = $usuarioRepository->findOneByUserId($idUsuario);
+
+            $usuario->setEstado('N');
+
+            $usuarioRepository->save($usuario, true);
+
+            return $this->json($usuario);
         } else {
             $error = [
-                "msg"=>"no tienes permiso para hacer esto"
+                "msg" => "no tienes permiso para hacer esto"
             ];
             return $this->json($error)->setStatusCode(400, "No tienes permiso para hacer esto");
         }
@@ -147,7 +196,6 @@ class UsuarioController extends AbstractController
 
 
             return $this->json($usuarioNew);
-
         } else {
             return $this->render('usuario/accesDenied.html.twig');
         }

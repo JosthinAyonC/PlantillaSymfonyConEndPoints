@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+{{parent()}}
+
+<div class="container-fluid">
+    <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+            <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
+                <form method="post" id="form-passedit">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <a href="{{path('app_home')}}" class="">
+                            <i class="fa fa-user-edit me-2"></i>
+                            <h3 class="text-primary">Change ur password</h3>
+                        </a>
+                    </div>
+                    <div class="form-floating mb-4">
+                        Ingresa tu clave actual:
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" name="clave" class="form-control" id="clave" placeholder="Password"
+                            required>
+                        <label for="clave" title="Ingresar" name="Ingresar">Last Password</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        Ingresa una nueva clave:
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" name="claveNueva" class="form-control" id="claveNueva"
+                            placeholder="Password" required>
+                        <label for="claveNueva" title="Ingresar" name="Ingresar">New password</label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input type="password" name="claveNuevaConfirmar" class="form-control" id="claveNuevaConfirmar"
+                            placeholder="Password" required>
+                        <label for="claveNuevaConfirmar" title="Ingresar" name="Ingresar">Confirm new password</label>
+                    </div>
+                    <input type="hidden" name="id" value="{{ app.user.idUsuario }}">
+
+                    <button type="button" id="btn-passedit" class="btn btn-primary py-3 w-100 mb-4">Change
+                        password</button>
+                    <br>
+                    <a href="{{path('app_home')}}" class="btn btn-primary py-3 w-100 mb-4">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let formPassedit = document.getElementById("form-passedit");
+
+    let btn_passedit = document.getElementById("btn-passedit");
+
+    try {
+
+        btn_passedit.addEventListener("click", async function () {
+            let formData = new FormData(formPassedit);
+            let data = Object.fromEntries(formData);
+
+            let claveN = formData.get("claveNueva");
+            let claveC = formData.get("claveNuevaConfirmar");
+            let jsonData = JSON.stringify(data);
+            console.log(jsonData)
+
+            if (claveN == claveC) {
+
+                const idUser = formData.get("id");
+
+                let respuesta = await fetch(`/usuario/${idUser}/change/pass`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: jsonData
+                });
+                console.log(respuesta)
+                if (respuesta.status == 200) {
+
+                    await fetch(`/usuario/${idUser}/change/pass`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: jsonData
+                    });
+                    alert("Contrasenia editada correctamente");
+                    location.replace('/usuario');
+
+                } else {
+                    alert("Contrasenia actual incorrecta")
+                }
+
+            } else {
+                alert("Verifique las claves ingresadas sean iguales")
+            }
+
+
+        });
+    } catch (error) {
+        console.log(error);
+    }
+</script>
+
+
+{% endblock %}
