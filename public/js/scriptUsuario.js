@@ -41,7 +41,6 @@ function mostrarDatosTabla(datos) {
         enlaceEditar.id = 'btn-editar'
         enlaceEditar.textContent = 'Editar';
         fila.appendChild(enlaceEditar);
-
         celdaAcciones.appendChild(botonBorrar);
         celdaAcciones.appendChild(enlaceEditar);
         fila.appendChild(celdaAcciones);
@@ -57,17 +56,22 @@ function mostrarDatosTabla(datos) {
 
         if (botonActual.classList.contains("btn-borrar")) {
 
-            let confirmacion = confirm(`Estas seguro que deseas eliminar al usuario ${nombre} ?`);
+            respuesta = await fetch(`/usuario/${iduser}/delete`, { method: 'PUT' })
+            console.log(respuesta.status)
+            if (respuesta.status == 200){
+                let confirmacion = confirm(`Estas seguro que deseas eliminar al usuario ${nombre} ?`);
 
-            if (confirmacion) {
+                if (confirmacion) {
+                    await fetch(`/usuario/${iduser}/delete`, { method: 'PUT' })
+                    document.querySelector(`#usuario-${iduser}`).remove()
+                    alert("Usuario borrado existosamente")
 
-                await fetch(`/usuario/${iduser}/delete`, { method: 'PUT' })
-                    .then(document.querySelector(`#usuario-${iduser}`).remove())
-                    .catch((e) => console.log(e));
-
-                alert("Usuario borrado existosamente")
-
+                }
+            }else{
+                alert("No tienes permiso para hacer esto")
             }
+
+            
 
         } else {
 

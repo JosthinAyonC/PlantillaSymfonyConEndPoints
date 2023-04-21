@@ -18,7 +18,7 @@ class UsuarioController extends AbstractController
     #[Route('/', name: 'app_usuario', methods: ['GET'])]
     public function indexEditar(EntityManagerInterface $entityManager): Response
     {
-        if ($this->isGranted('ROLE_ADMIN')) {
+        if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_LIMPIEZA')) {
             return $this->render('usuario/index.html.twig');
         } else {
             return $this->render('usuario/accesDenied.html.twig');
@@ -38,7 +38,7 @@ class UsuarioController extends AbstractController
     #[Route('/get', name: 'app_usuario_api', methods: ['GET'])]
     public function getUsuarios(EntityManagerInterface $entityManager): Response
     {
-        if ($this->isGranted('ROLE_ADMIN')) {
+        if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_LIMPIEZA')) {
             $usuarios = $entityManager
                 ->getRepository(Usuario::class)
                 ->buscarUsuario();
@@ -108,8 +108,12 @@ class UsuarioController extends AbstractController
             $usuarioRepository->save($usuario, true);
     
             return $this->json($usuario);
+
         } else {
-            return $this->render('usuario/accesDenied.html.twig');
+            $error = [
+                "msg"=>"no tienes permiso para hacer esto"
+            ];
+            return $this->json($error)->setStatusCode(400, "No tienes permiso para hacer esto");
         }
     }
 
@@ -143,6 +147,7 @@ class UsuarioController extends AbstractController
 
 
             return $this->json($usuarioNew);
+
         } else {
             return $this->render('usuario/accesDenied.html.twig');
         }

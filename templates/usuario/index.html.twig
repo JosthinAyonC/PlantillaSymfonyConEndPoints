@@ -16,7 +16,11 @@
                         <th>Correo</th>
                         <th>Rol</th>
                         <th>Estado</th>
-                        <th>actions</th>
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <th>Acciones</th>
+                        {% else %}
+                        <th>Acciones *BLOQUEADO*</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -24,7 +28,9 @@
                 </tbody>
 
             </table>
+            {% if is_granted('ROLE_ADMIN') %}
             <a class="btn btn-primary m-2" href="{{path('app_usuario_nuevo') }}">Crear nuevo usuario</a>
+            {% endif %}
         </div>
     </div>
 </div>
