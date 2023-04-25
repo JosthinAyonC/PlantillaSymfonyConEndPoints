@@ -131,20 +131,26 @@ try {
 
         // Convertir el campo roles a un objeto JavaScript
         data.roles = JSON.parse(data.roles);
+        if (data.nombre=="" || data.apellido=="" || data.correo=="" || data.clave=="" ){
+                
+            alert("Asegurese de llenar todos los datos")
+            
+        }else{
+            // Convertir el objeto JavaScript a una cadena JSON
+            let jsonData = JSON.stringify(data);
+    
+            const idUser = formData.get("id");
+            let response = await fetch(`/usuario/${idUser}/editar`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            });
+            alert("Usuario editado satisfatoriamente");
+            location.replace('/usuario');
+        }
 
-        // Convertir el objeto JavaScript a una cadena JSON
-        let jsonData = JSON.stringify(data);
-
-        const idUser = formData.get("id");
-        let response = await fetch(`/usuario/${idUser}/editar`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: jsonData
-        });
-        alert("Usuario editado satisfatoriamente");
-        location.replace('/usuario');
     });
 } catch (error) {
     console.log(error);
@@ -158,27 +164,33 @@ try {
 
     btn_nuevo.addEventListener("click", async function () {
 
-        let formData = new FormData(formUsuarioNuevo);
+            let formData = new FormData(formUsuarioNuevo);
+            // Convertir el objeto FormData a un objeto JavaScript
+            let data = Object.fromEntries(formData);    
+            // Convertir el campo roles a un objeto JavaScript
+            data.roles = JSON.parse(data.roles);
 
-        // Convertir el objeto FormData a un objeto JavaScript
-        let data = Object.fromEntries(formData);
+            if (data.nombre=="" || data.apellido=="" || data.correo=="" || data.clave=="" ){
+                
+                alert("Asegurese de llenar todos los datos")
+                
+            }else{
 
-        // Convertir el campo roles a un objeto JavaScript
-        data.roles = JSON.parse(data.roles);
+            // Convertir el objeto JavaScript a una cadena JSON
+                let jsonData = JSON.stringify(data);
+                let response = await fetch(`/usuario/nuevo`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: jsonData
+                });
+                alert("Usuario creado satisfatoriamente");
+        
+                location.replace('/usuario');
+               
+            }
 
-        // Convertir el objeto JavaScript a una cadena JSON
-        let jsonData = JSON.stringify(data);
-
-        let response = await fetch(`/usuario/nuevo`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: jsonData
-        });
-        alert("Usuario creado satisfatoriamente");
-
-        location.replace('/usuario');
     });
 
 } catch (error) {
