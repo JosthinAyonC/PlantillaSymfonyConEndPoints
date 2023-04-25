@@ -30,9 +30,9 @@ function mostrarDatosTabla(datos) {
             celdaEstado.textContent = estado;
         fila.appendChild(celdaEstado);
 
-        if (rolUsuarioLog == "ROLE_ADMIN") {
+        var celdaAcciones = document.createElement("td");
 
-            var celdaAcciones = document.createElement("td");
+        if (rolUsuarioLog == "ROLE_ADMIN") {
 
             var botonBorrar = document.createElement('a');
             botonBorrar.classList.add('btn', 'btn-outline-primary', 'm-2', 'btn-borrar', 'btn-usuario');
@@ -45,10 +45,29 @@ function mostrarDatosTabla(datos) {
             enlaceEditar.id = 'btn-editar'
             enlaceEditar.textContent = 'Editar';
             fila.appendChild(enlaceEditar);
+            
+            var vistazo = document.createElement('a');
+            vistazo.classList.add('btn', 'btn-outline-primary', 'm-2', 'btn-usuario', 'btn-show');
+            vistazo.id = 'btn-show'
+            vistazo.textContent = 'Vistazo';
+            fila.appendChild(vistazo);
+
+            celdaAcciones.appendChild(vistazo);
             celdaAcciones.appendChild(botonBorrar);
             celdaAcciones.appendChild(enlaceEditar);
+
             fila.appendChild(celdaAcciones);
 
+        }else{
+            var vistazo = document.createElement('a');
+            vistazo.classList.add('btn', 'btn-outline-primary', 'm-2', 'btn-usuario', 'btn-show');
+            vistazo.id = 'btn-show'
+            vistazo.textContent = 'Vistazo';
+            fila.appendChild(vistazo);
+
+            celdaAcciones.appendChild(vistazo);
+            fila.appendChild(celdaAcciones);
+        
         }
         tbody.appendChild(fila);
     });
@@ -70,9 +89,14 @@ function mostrarDatosTabla(datos) {
 
             }
 
-        } else {
+        } else if (botonActual.classList.contains("btn-editar")) {
 
             window.location.replace(`/usuario/editar/${iduser}`);
+            
+        }else{
+
+            window.location.replace(`/usuario/visualizar/${iduser}`);
+
         }
     }));
 }

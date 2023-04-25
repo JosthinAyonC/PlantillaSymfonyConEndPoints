@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Usuario{% endblock %}
+
+{% block body %}
+<br>
+<div class="container-fluid">
+    <div class="bg-secondary rounded h-100 p-4">
+        <div class="bg-secondary rounded h-100 p-4">
+
+            <div class="row h-100 align-items-center justify-content-center">
+                <div class="bg-secondary rounded h-100 p-4">
+                    <h2 class="mb-4">Vistazo de usuario</h2>
+
+                    <table class="table">
+                        <!-- //CODIGO AQUI -->
+
+                        <tbody>
+                            <tr>
+                                <th><h4>IdUsuario</h4></th>
+                                <td>{{ usuario.idUsuario }}</td>
+                            </tr>
+                            <tr>
+                                <th><h4>Nombre</h4></th>
+                                <td>{{ usuario.nombre }}</td>
+                            </tr>
+                            <tr>
+                                <th><h4>Apellido</h4></th>
+                                <td>{{ usuario.apellido }}</td>
+                            </tr>
+                            <tr>
+                                <th><h4>Correo</h4></th>
+                                <td>{{ usuario.correo }}</td>
+                            </tr>
+                            <tr>
+                                <th><h4>Clave</h4></th>
+                                <td>{{ usuario.clave }}</td>
+                            </tr>
+                            <tr>
+                                <th><h4>Roles</h4></th>
+                                <td>{{ usuario.roles ? usuario.roles|json_encode : '' }}</td>
+                            </tr>
+                            <tr>
+                                <th><h4>Estado</h4></th>
+                                <td>{{ usuario.estado }}</td>
+                            </tr>
+                        </tbody>
+
+                        <!-- SHOW/EDIT -->
+                        
+                    </table>
+                    <div>
+                        <a href="http://127.0.0.1:8000/usuario" type="button"
+                            class="btn btn-primary py-3 w-100 mb-4">Volver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
