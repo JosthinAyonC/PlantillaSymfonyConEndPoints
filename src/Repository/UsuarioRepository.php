@@ -47,10 +47,24 @@ class UsuarioRepository extends ServiceEntityRepository
        return $this->createQueryBuilder('u')
            ->andWhere('u.estado != :estado')
            ->setParameter('estado', 'N')
+           ->orderBy('u.idUsuario', 'ASC')
            ->getQuery()
            ->getResult()
-       ;
-   }
+           ;
+    }
+   
+    public function ordenarPorRoles($rol)
+   {
+       return $this->createQueryBuilder('u')
+           ->andWhere('u.estado != :estado')
+           ->setParameter('estado', 'N')
+           ->orderBy('u.idUsuario', 'ASC')
+           ->getQuery()
+           ->getResult()
+           ;
+    }
+
+   
    public function findOneByUserId($value): ?Usuario
     {
         return $this->createQueryBuilder('u')

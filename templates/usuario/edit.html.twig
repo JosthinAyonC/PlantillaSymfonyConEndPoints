@@ -40,15 +40,16 @@
 
                     </div>
                     <div class="form-floating mb-4">
-                        <input type="password" id="clave" class="form-control" value="*******" name="clave" disabled>
+                        <input type="password" id="clave" class="form-control" value="****************" name="clave" disabled>
 
                         <label for="clave">Password</label>
                     </div>
                     <div class="form-floating mb-3">
                         <select class="form-select" for="roles" name="roles" aria-label="Floating label select example">
-                            <option id="roles" value='["ROLE_ADMIN"]'>Administrador</option>
-                            <option id="roles" value='["ROLE_RECEPCION"]'>Recepcionista</option>
-                            <option id="roles" value='["ROLE_LIMPIEZA"]'>Personal de limpieza</option>
+                            <option value='["{{ usuario.roles|join( "|" ) }}"]'  selected>{{ usuario.roles|join(' | ') }}</option>
+                            <option value='["ROLE_ADMIN"]'>Administrador</option>
+                            <option value='["ROLE_RECEPCION"]'>Recepcionista</option>
+                            <option value='["ROLE_LIMPIEZA"]'>Personal de limpieza</option>
                         </select>
                         <label for="roles">ROL</label>
                         

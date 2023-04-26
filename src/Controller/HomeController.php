@@ -15,4 +15,9 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
         ]);
     }
+    #[Route('/404', name: '404')]
+    public function notFound(): Response
+    {
+        return $this->render('usuario/404.html.twig');
+    }
 }
