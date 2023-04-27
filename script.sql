@@ -19,3 +19,4 @@ VALUES
 '$2y$13$yE9EI8TQZ04C9HWWmcpWOuLQbm8l/zAHa2SKr.EpkyQLhengUBMuS',
 '["ROLE_ADMIN"]', 'A' 
 );
+

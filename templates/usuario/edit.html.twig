@@ -46,7 +46,11 @@
                     </div>
                     <div class="form-floating mb-3">
                         <select class="form-select" for="roles" name="roles" aria-label="Floating label select example">
-                            <option value='["{{ usuario.roles|join( "|" ) }}"]'  selected>{{ usuario.roles|join(' | ') }}</option>
+                            <option value='["{{ usuario.roles|join( "|" ) }}"]'  selected>
+                                {% if usuario.roles|join(' | ') == 'ROLE_ADMIN' %}Administrador 
+                                {% elseif usuario.roles|join(' | ') == 'ROLE_RECEPCION' %}Recepcionista
+                                {% else %}Personal de limpieza
+                                {%  endif %}</option>
                             <option value='["ROLE_ADMIN"]'>Administrador</option>
                             <option value='["ROLE_RECEPCION"]'>Recepcionista</option>
                             <option value='["ROLE_LIMPIEZA"]'>Personal de limpieza</option>
@@ -58,8 +62,9 @@
                     <div class="form-floating mb-3">
                         <select class="form-select" for="estado" name="estado"
                             aria-label="Floating label select example">
-                            <option id="estado" value="A">Activo</option>
-                            <option id="estado" value="I">Inactivo</option>
+                            <option value={{usuario.estado}}>{% if usuario.estado == 'A' %} Activo {% else %}Inactivo{% endif %}</option>
+                            <option value="A">Activo</option>
+                            <option value="I">Inactivo</option>
                         </select>
                         <label for="roles">Estado</label>
 
