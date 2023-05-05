@@ -5,6 +5,7 @@
 {% block body %}
 {{parent()}}
 
+<script src="{{asset('js/scriptUsuario.js')}}"></script>
 <div class="container-fluid">
     <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
         <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
@@ -40,7 +41,7 @@
                     </div>
                     <input type="hidden" name="id" value="{{ app.user.idUsuario }}">
 
-                    <button type="button" id="btn-passedit" class="btn btn-primary py-3 w-100 mb-4">Change
+                    <button type="button" id="butn-passedit" class="btn btn-primary py-3 w-100 mb-4">Change
                         password</button>
                     <br>
                     <a href="{{path('app_home')}}" class="btn btn-primary py-3 w-100 mb-4">Cancelar</a>
@@ -49,6 +50,6 @@
         </div>
     </div>
 </div>
-<script src="{{asset('js/scriptUsuario.js')}}"></script>
+
 
 {% endblock %}

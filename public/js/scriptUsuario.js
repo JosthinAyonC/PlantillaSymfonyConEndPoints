@@ -211,21 +211,21 @@ try {
 
 //EDITAR CONTRASENIA
 let formPassedit = document.getElementById("form-passedit");
-let btn_passedit = document.getElementById("btn-passedit");
+let btn_passedit = document.getElementById("butn-passedit");
 
 try {
 
     btn_passedit.addEventListener("click", async function () {
         let formData = new FormData(formPassedit);
         let data = Object.fromEntries(formData);
+        console.log('soyputo')
 
         let claveN = formData.get("claveNueva");
         let claveC = formData.get("claveNuevaConfirmar");
         let jsonData = JSON.stringify(data);
-        console.log(jsonData)
 
         if (claveN == claveC) {
-
+            
             const idUser = formData.get("id");
 
             let respuesta = await fetch(`/usuario/${idUser}/change/pass`, {
