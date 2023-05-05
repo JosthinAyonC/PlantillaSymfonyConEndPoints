@@ -158,7 +158,17 @@ try {
 
 //NUEVO USUARIO
 let btn_nuevo = document.getElementById("btnNuevo");
+let modal = document.getElementById("modal-container");
+let close = document.getElementById("close");
 let formUsuarioNuevo = document.getElementById("nuevo-usuario");
+
+show.addEventListener("click", function () {
+    modal.classList.add("show-modal");
+})
+
+close.addEventListener("click", function () {
+    modal.classList.remove("show-modal");
+})
 
 try {
 

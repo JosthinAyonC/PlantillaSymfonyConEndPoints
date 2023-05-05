@@ -21,22 +21,13 @@ class UsuarioController extends AbstractController
     public function indexEditar(): Response
     {
         if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_LIMPIEZA')) {
+            
             return $this->render('usuario/index.html.twig');
         } else {
             return $this->render('usuario/accesDenied.html.twig');
         }
     }
-
-    #[Route('/new', name: 'app_usuario_nuevo', methods: ['GET'])]
-    public function indexNuevo(EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isGranted('ROLE_ADMIN')) {
-            return $this->render('usuario/new.html.twig');
-        } else {
-            return $this->render('usuario/accesDenied.html.twig');
-        }
-    }
-
+    
     #[Route('/get', name: 'app_usuario_api', methods: ['GET'])]
     public function getUsuarios(EntityManagerInterface $entityManager): Response
     {

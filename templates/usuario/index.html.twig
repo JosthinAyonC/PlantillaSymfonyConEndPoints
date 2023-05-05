@@ -7,7 +7,16 @@
 <div class="container-fluid">
     <div class="bg-secondary rounded h-100 p-4">
         <div class="bg-secondary rounded h-100 p-4">
-            <h3 class="mb-4">Usuarios</h3>
+            <div class="row">
+                <div class="col-12 col-sm-6 text-center text-sm-start">
+                    <h3 class="mb-4">Usuarios</h3>
+                </div>
+                {% if is_granted('ROLE_ADMIN') %}
+                <div class="col-12 col-sm-6 text-center text-sm-end">
+                    <a class="btn btn-primary m-2" id="show">Crear nuevo usuario</a>
+                </div>
+                {% endif %}
+            </div>
             <form id="form-obtenerRoles">
                 <input type="hidden" name="roles" value="{{ app.user.roles|join(', ') }}">
             </form>
@@ -23,16 +32,88 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                 </tbody>
 
             </table>
-            {% if is_granted('ROLE_ADMIN') %}
-            <a class="btn btn-primary m-2" href="{{path('app_usuario_nuevo') }}">Crear nuevo usuario</a>
-            {% endif %}
         </div>
     </div>
 </div>
+<!-- //Nuevo -->
+<div class="modal-container" id="modal-container">
+    <div class="container-fluid">
+        <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+
+                <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <a href="#" class="">
+                            <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>Nuevo registro.</h3>
+                        </a>
+                        <h3>Aplication</h3>
+                    </div>
+                    <form id="nuevo-usuario">
+
+                        <div class="form-floating mb-3">
+                            <input type="text" id="nombre" class="form-control" name="nombre" placeholder="Nombre">
+
+                            <label for="nombre">Nombre</label>
+
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" id="apellido" class="form-control" name="apellido"
+                                placeholder="Apellido">
+
+                            <label for="apellido">Appelido</label>
+
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="email" id="correo" class="form-control" name="correo" placeholder="Correo">
+
+                            <label for="correo">Email address</label>
+
+                        </div>
+                        <div class="form-floating mb-4">
+                            <input type="password" id="clave" class="form-control" name="clave" placeholder="Password">
+
+                            <label for="clave">Password</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <select class="form-select" for="roles" name="roles"
+                                aria-label="Floating label select example">
+                                <option id="roles" value='["ROLE_ADMIN"]'>Administrador</option>
+                                <option id="roles" value='["ROLE_RECEPCION"]'>Recepcionista</option>
+                                <option id="roles" value='["ROLE_LIMPIEZA"]'>Personal de limpieza</option>
+                            </select>
+                            <label for="roles">ROL</label>
+
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <select class="form-select" for="estado" name="estado"
+                                aria-label="Floating label select example">
+                                <option id="estado" value="A">Activo</option>
+                                <option id="estado" value="I">Inactivo</option>
+                            </select>
+                            <label for="roles">Estado</label>
+
+                        </div>
+
+                        <div>
+                            <button id="btnNuevo" type="button" class="btn btn-primary py-3 w-100 mb-4">Crear</button>
+                        </div>
+
+
+                        <button id="close" type="button" class="btn btn-primary py-3 w-100 mb-4">Cerrar</button>
+
+                </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script src="{{asset('js/scriptUsuario.js')}}"></script>
 
