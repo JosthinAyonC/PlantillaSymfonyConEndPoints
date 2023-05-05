@@ -196,8 +196,10 @@ try {
                     body: jsonData
                 });
                 alert("Usuario creado satisfatoriamente");
-        
-                location.replace('/usuario');
+                modal.classList.remove("show-modal");
+                ListarUsuarios();
+                formUsuarioNuevo.reset();
+                
                
             }
 
