@@ -160,18 +160,19 @@ try {
 let btn_nuevo = document.getElementById("btnNuevo");
 let modal = document.getElementById("modal-container");
 let close = document.getElementById("close");
+let showV = document.getElementById("show");
 let formUsuarioNuevo = document.getElementById("nuevo-usuario");
 
-show.addEventListener("click", function () {
-    modal.classList.add("show-modal");
-})
-
-close.addEventListener("click", function () {
-    modal.classList.remove("show-modal");
-})
 
 try {
-
+    showV.addEventListener("click", function () {
+        modal.classList.add("show-modal");
+    });
+    
+    close.addEventListener("click", function () {
+        modal.classList.remove("show-modal");
+    });
+    
     btn_nuevo.addEventListener("click", async function () {
 
             let formData = new FormData(formUsuarioNuevo);
@@ -210,18 +211,19 @@ try {
 }
 
 //EDITAR CONTRASENIA
-let formPassedit = document.getElementById("form-passedit");
-let btn_passedit = document.getElementById("butn-passedit");
 
+let formPassedit = document.getElementById("form-passedit");
+let btn_passedit = document.getElementById("passedit");
 try {
 
     btn_passedit.addEventListener("click", async function () {
         let formData = new FormData(formPassedit);
         let data = Object.fromEntries(formData);
-        console.log('soyputo')
+        console.log('soyputo');
 
         let claveN = formData.get("claveNueva");
         let claveC = formData.get("claveNuevaConfirmar");
+
         let jsonData = JSON.stringify(data);
 
         if (claveN == claveC) {
@@ -254,8 +256,6 @@ try {
         } else {
             alert("Verifique las claves ingresadas sean iguales")
         }
-
-
     });
 } catch (error) {
     console.log(error);
