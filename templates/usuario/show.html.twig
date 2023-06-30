@@ -14,35 +14,33 @@
 
                     <table class="table">
                         <!-- //CODIGO AQUI -->
-
+                        <div class="invisible">
+                            <input type="text" id="idUsuario" value={{idUsuario}} name="id">
+                        </div>
                         <tbody>
                             <tr>
                                 <th><h4>IdUsuario</h4></th>
-                                <td>{{ usuario.idUsuario }}</td>
+                                <td>{{idUsuario}}</td>
                             </tr>
                             <tr>
                                 <th><h4>Nombre</h4></th>
-                                <td>{{ usuario.nombre }}</td>
+                                <td id="nombre"></td>
                             </tr>
                             <tr>
                                 <th><h4>Apellido</h4></th>
-                                <td>{{ usuario.apellido }}</td>
+                                <td id="apellido"></td>
                             </tr>
                             <tr>
                                 <th><h4>Correo</h4></th>
-                                <td>{{ usuario.correo }}</td>
-                            </tr>
-                            <tr>
-                                <th><h4>Clave</h4></th>
-                                <td>{{ usuario.clave }}</td>
+                                <td id="correo"></td>
                             </tr>
                             <tr>
                                 <th><h4>Roles</h4></th>
-                                <td>{{ usuario.roles ? usuario.roles|json_encode : '' }}</td>
+                                <td id="roles"></td>
                             </tr>
                             <tr>
                                 <th><h4>Estado</h4></th>
-                                <td>{{ usuario.estado }}</td>
+                                <td id="estado"></td>
                             </tr>
                         </tbody>
 
@@ -58,4 +56,6 @@
         </div>
     </div>
 </div>
+<script src="{{asset('js/Usuario/datosUsuario.js')}}"></script>
+
 {% endblock %}

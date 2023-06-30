@@ -33,7 +33,7 @@ class UsuarioController extends AbstractController
     public function indexEditar(): Response
     {
         if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_LIMPIEZA')) {
-            
+
             return $this->render('usuario/index.html.twig');
         } else {
             return $this->render('usuario/accesDenied.html.twig');
@@ -45,24 +45,20 @@ class UsuarioController extends AbstractController
     {
         if ($this->isGranted('ROLE_ADMIN')) {
             return $this->render('usuario/edit.html.twig', [
-                "idUser"=>$id
+                "idUser" => $id
             ]);
         } else {
             return $this->render('usuario/accesDenied.html.twig');
         }
     }
-    
-    #[Route('/visualizar/{idUsuario}', name: 'usuario_show', methods: ['GET'])]
-    public function show(Usuario $usuario): Response
-    {
-        if ($usuario->getEstado() === 'N') {
-            return $this->render('usuario/404.html.twig');
-        } else {
 
-            return $this->render('usuario/show.html.twig', [
-                'usuario' => $usuario,
-            ]);
-        }
+    #[Route('/visualizar/{idUsuario}', name: 'usuario_show', methods: ['GET'])]
+    public function show(int $idUsuario): Response
+    {
+        return $this->render(
+            'usuario/show.html.twig',
+            ["idUsuario" => $idUsuario]
+        );
     }
 
     #[Route('/change/pass', name: 'edit_password', methods: ['GET'])]
@@ -70,9 +66,9 @@ class UsuarioController extends AbstractController
     {
         return $this->render('usuario/passedit.html.twig');
     }
-    
+
     //Peticiones https
-    
+
     #[Route('/get', name: 'app_usuario_api', methods: ['GET'])]
     public function getUsuarios(): Response
     {
@@ -120,10 +116,10 @@ class UsuarioController extends AbstractController
     }
 
     #[Route('/obtener/{id}', name: 'obtener_usuario_api', methods: ['GET'])]
-    public function obtenerUsuarioPorId( Usuario $usuario): Response
+    public function obtenerUsuarioPorId(Usuario $usuario): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
-            
+
             return $this->json($usuario)->setStatusCode(201);
         } else {
             return $this->render('usuario/accesDenied.html.twig');
@@ -208,7 +204,7 @@ class UsuarioController extends AbstractController
     }
 
     #[Route('/{idUsuario}/delete', name: 'delete_usuario', methods: ['PUT'])]
-    public function deleteUsuarios(int $idUsuario,Usuario $usuario): Response
+    public function deleteUsuarios(int $idUsuario, Usuario $usuario): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
 
@@ -217,15 +213,13 @@ class UsuarioController extends AbstractController
             $this->usuarioRepository->save($usuario, true);
 
             return $this->json([
-                "msg" => "Usuario con id: ".$idUsuario. ", eliminado" 
+                "msg" => "Usuario con id: " . $idUsuario . ", eliminado"
             ]);
         } else {
             $error = [
-                "msg" => "no tienes permiso para hacer esto" 
+                "msg" => "no tienes permiso para hacer esto"
             ];
             return $this->json($error)->setStatusCode(400, "No tienes permiso para hacer esto");
         }
     }
-
-
 }

@@ -10,7 +10,6 @@ function llenarFormulario() {
     let estado = document.getElementById("estado");
 
     traerUsuario().then(usuario => {
-
         nombre.value = usuario.nombre;
         apellido.value = usuario.apellido;
         correo.value = usuario.correo;
