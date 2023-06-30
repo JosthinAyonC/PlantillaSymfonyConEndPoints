@@ -27,31 +27,64 @@ class UsuarioController extends AbstractController
         $this->userPasswordHasher = $userPasswordHasher;
     }
 
+    //Renderizacion de vistas
+
     #[Route('/', name: 'app_usuario', methods: ['GET'])]
     public function indexEditar(): Response
     {
         if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_LIMPIEZA')) {
-
+            
             return $this->render('usuario/index.html.twig');
         } else {
             return $this->render('usuario/accesDenied.html.twig');
         }
     }
 
+    #[Route('/editar/{id}', name: 'editar_usuario', methods: ['GET'])]
+    public function editarUsuario(int $id): Response
+    {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->render('usuario/edit.html.twig', [
+                "idUser"=>$id
+            ]);
+        } else {
+            return $this->render('usuario/accesDenied.html.twig');
+        }
+    }
+    
+    #[Route('/visualizar/{idUsuario}', name: 'usuario_show', methods: ['GET'])]
+    public function show(Usuario $usuario): Response
+    {
+        if ($usuario->getEstado() === 'N') {
+            return $this->render('usuario/404.html.twig');
+        } else {
+
+            return $this->render('usuario/show.html.twig', [
+                'usuario' => $usuario,
+            ]);
+        }
+    }
+
+    #[Route('/change/pass', name: 'edit_password', methods: ['GET'])]
+    public function editarContraseniaFront(): Response
+    {
+        return $this->render('usuario/passedit.html.twig');
+    }
+    
+    //Peticiones https
+    
     #[Route('/get', name: 'app_usuario_api', methods: ['GET'])]
     public function getUsuarios(): Response
     {
         if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_LIMPIEZA')) {
-            $usuarios = $this->entityManager
-                ->getRepository(Usuario::class)
-                ->buscarUsuario();
-
+            $usuarios = $this->usuarioRepository->traerUsuarios();
             return $this->json($usuarios);
         } else {
             return $this->render('usuario/accesDenied.html.twig');
         }
     }
-    #[Route('/nuevo', name: 'nuevo_usuario', methods: ['POST'])]
+
+    #[Route('/nuevo', name: 'nuevo_usuario_api', methods: ['POST'])]
     public function create(
         Request $request
     ): Response {
@@ -78,26 +111,26 @@ class UsuarioController extends AbstractController
             $this->usuarioRepository->save($usuarioNew, true);
 
 
-            return $this->json($usuarioNew);
-        } else {
-            return $this->render('usuario/accesDenied.html.twig');
-        }
-    }
-
-    #[Route('/editar/{id}', name: 'editar_usuario', methods: ['GET'])]
-    public function editarUsuario(Usuario $usuario): Response
-    {
-        if ($this->isGranted('ROLE_ADMIN')) {
-
-            return $this->render('usuario/edit.html.twig', [
-                'usuario' => $usuario
+            return $this->json([
+                "msg" => "Usuario creado!"
             ]);
         } else {
             return $this->render('usuario/accesDenied.html.twig');
         }
     }
 
-    #[Route('/{id}/editar', name: 'actualizar_usuario', methods: ['PUT'])]
+    #[Route('/obtener/{id}', name: 'obtener_usuario_api', methods: ['GET'])]
+    public function obtenerUsuarioPorId( Usuario $usuario): Response
+    {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            
+            return $this->json($usuario)->setStatusCode(201);
+        } else {
+            return $this->render('usuario/accesDenied.html.twig');
+        }
+    }
+
+    #[Route('/{id}/editar', name: 'actualizar_usuario_api', methods: ['PUT'])]
     public function editarUsuarioPut(
         Request $request,
         Usuario $usuario
@@ -138,19 +171,15 @@ class UsuarioController extends AbstractController
 
             $this->usuarioRepository->save($usuario, true);
 
-            return $this->json($usuario);
+            return $this->json([
+                "msg" => "Usuario editado satisfactoriamente"
+            ]);
         } else {
             return $this->render('usuario/accesDenied.html.twig');
         }
     }
 
-    #[Route('/change/pass', name: 'edit_password', methods: ['GET'])]
-    public function editarContraseniaFront(): Response
-    {
-        return $this->render('usuario/passedit.html.twig');
-    }
-
-    #[Route('/{id}/change/pass', name: 'update_password', methods: ['PUT'])]
+    #[Route('/{id}/change/pass', name: 'update_password_api', methods: ['PUT'])]
     public function editarContraseniaPut(
         Usuario $usuario,
         Request $request
@@ -168,17 +197,18 @@ class UsuarioController extends AbstractController
                 )
             );
             $this->usuarioRepository->save($usuario, true);
-            return $this->json($usuario);
+            return $this->json([
+                "msg" => "Contraseña editada satisfactoriamente"
+            ]);
         } else {
-            $error = [
-                "msg" => "contrasenia incorrecta"
-            ];
-            return $this->json($error)->setStatusCode(400, "Contrasenia incorrecta");
+            return $this->json([
+                "msg" => "La contraseña proporcionada no es la correcta"
+            ])->setStatusCode(400);
         }
     }
 
     #[Route('/{idUsuario}/delete', name: 'delete_usuario', methods: ['PUT'])]
-    public function deleteUsuarios(Usuario $usuario): Response
+    public function deleteUsuarios(int $idUsuario,Usuario $usuario): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
 
@@ -186,26 +216,16 @@ class UsuarioController extends AbstractController
 
             $this->usuarioRepository->save($usuario, true);
 
-            return $this->json($usuario);
+            return $this->json([
+                "msg" => "Usuario con id: ".$idUsuario. ", eliminado" 
+            ]);
         } else {
             $error = [
-                "msg" => "no tienes permiso para hacer esto"
+                "msg" => "no tienes permiso para hacer esto" 
             ];
             return $this->json($error)->setStatusCode(400, "No tienes permiso para hacer esto");
         }
     }
 
 
-    #[Route('/visualizar/{idUsuario}', name: 'usuario_show', methods: ['GET'])]
-    public function show(Usuario $usuario): Response
-    {
-        if ($usuario->getEstado() === 'N') {
-            return $this->render('usuario/404.html.twig');
-        } else {
-
-            return $this->render('usuario/show.html.twig', [
-                'usuario' => $usuario,
-            ]);
-        }
-    }
 }

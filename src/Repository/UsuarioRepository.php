@@ -42,7 +42,7 @@ class UsuarioRepository extends ServiceEntityRepository
 //    /**
 //     * @return Usuario[] Returns an array of Usuario objects
 //     */
-   public function buscarUsuario()
+   public function traerUsuarios()
    {
        return $this->createQueryBuilder('u')
            ->andWhere('u.estado != :estado')
